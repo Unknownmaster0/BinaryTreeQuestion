@@ -48,6 +48,7 @@ Node* treeBuild(int in[], int pre[], int &indexPre, int startIn, int endIn, int 
     Node* root = new Node(value);
     
     // find the data in the inOrder array . 
+    // we can also use the map to store the all the data of the inorder , then the time complexity will optimised to O(N);
     int pos = findPosition(in, value, startIn, endIn);
     
     
