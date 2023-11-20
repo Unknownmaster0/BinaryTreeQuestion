@@ -1,5 +1,6 @@
 #include<iostream>
-#include<map>
+#include<unordered_map>
+
 using namespace std;
 
 // question link -> https://practice.geeksforgeeks.org/problems/k-sum-paths/1
@@ -60,37 +61,57 @@ void numbersPaths(Node*root, int k, int& count, vector<int>& path)
 
 // optimal approach -> Nice use of the mapping technique.
 // Time complexity -> O(Number of nodes) and the space complexity -> O(number of nodes or height of tree)
-int numbersPaths(Node* root, int k, map<int,int>& path, int sum)
+// Dry run the code to understand the flow of recursion more accuretely.
+int mod = 1e9+7;
+
+void print(unordered_map<int,int> mp)
 {
-    // base case 
+    for(auto i:mp)
+    {
+        cout<<i.first<<" "<<i.second<<endl;
+    }
+}
+
+int numbersPaths(Node* root, int k, unordered_map<int,int> &frequency, int sum)
+{
     if(root == NULL)
         return 0;
         
-    int count = 0;
-    
+        int count = 0;
+
     // increment the sum
     sum += root->data;
+    // cout<<"sum -> "<<sum<<endl;
     
     // if the sum-k is present in the mapping then, increment the count
-    if(path.find(sum-k) != path.end())
-        count += path[sum-k];
+    if(frequency.find(sum-k) != frequency.end()){
+        count += frequency[sum-k];
+        // cout<<"count -> "<<count<<endl;
+    }
         
     // update the mapping of the current sum
-    path[sum]++;
+    frequency[sum]++;
+    
+    // printing the frequency map after updating 
+    // print(frequency);
         
-    int leftCount = numbersPaths(root->left, k, path, sum);
-    int rightCount = numbersPaths(root->right, k , path, sum);
+    int leftCount = numbersPaths(root->left, k, frequency, sum);
+    int rightCount = numbersPaths(root->right, k , frequency, sum);
     
     // backtracking step -> decrement the frequency of the current sum
-    path[sum]--;
+    frequency[sum]--;
+    // cout<<"decrementing the frequency of the sum -> "<<sum<<endl;
+    // print(frequency);
     
+    
+    // cout<<"finally returning the value to the above recursion -> "<<count + leftCount + rightCount<<endl;
     // finally return the value for the above node
     return count + leftCount + rightCount;
 }
 
 int sumK(Node *root,int k)
 {
-    map<int,int> path;
+    unordered_map<int,int> path;
     path[0]++;
     return numbersPaths(root,k,path,0);
 }
